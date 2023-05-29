@@ -2,13 +2,10 @@ package ru.practicum.shareit.item.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.exception.NotNullException;
 import ru.practicum.shareit.exception.UserNotFoundException;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,12 +18,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ItemRepositoryImpl implements ItemRepository {
 
-    private final UserRepository userRepository;
     private Map<Integer, Item> items = new HashMap<>();
     private int id = 0;
 
     @Override
     public List<Item> getAllByOwner(int ownerId) {
+        log.info("Запрос всех вещей пользователя {}", ownerId);
         return items.values().stream()
                 .filter(item -> item.getOwner() == ownerId)
                 .collect(Collectors.toList());
@@ -34,6 +31,7 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public Item getById(int id) {
+        log.info("Запрос вещи с id {}", id);
         return items.get(id);
     }
 
@@ -52,6 +50,7 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public Item create(Item item, int ownerId) {
+        log.info("Запрос на создание вещи");
         validate(item);
         id++;
         item.setId(id);
@@ -61,9 +60,10 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public Item update(Item item, int ownerId, int id) {
+        log.info("Запрос на обновление вещи с id {}", id);
         item.setId(id);
         if (items.get(id).getOwner() != ownerId) {
-            throw new NotNullException(HttpStatus.NOT_FOUND, "Вещь может обновить только владелец");
+            throw new UserNotFoundException("Вещь может обновить только владелец");
         }
         if (item.getName() == null) {
             item.setName(items.get(id).getName());
@@ -80,22 +80,18 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public void delete(int id) {
+        log.info("Запрос на удаление вещи с id {}", id);
         items.remove(id);
     }
 
     private void validate(Item item) {
-        try {
-            userRepository.getById(item.getOwner());
-        } catch (UserNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь не найден");
-        }
         if (!items.containsKey(item.getId())) {
             if (item.getName().isBlank() || item.getName() == null
                     || item.getDescription() == null) {
-                throw new NotNullException(HttpStatus.BAD_REQUEST, "Поля имя, описание и доступность не могут быть пустыми");
+                throw new NotNullException("Поля имя, описание и доступность не могут быть пустыми");
             }
             if (item.getAvailable() == null) {
-                throw new NotNullException(HttpStatus.BAD_REQUEST, "Поле available не может быть пустым");
+                throw new NotNullException("Поле available не может быть пустым");
             }
         }
     }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.user.service.UserService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
+    private final UserService userService;
 
     @Override
     public List<ItemDto> getAllByOwner(int ownerId) {
@@ -35,6 +37,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto create(ItemDto itemDto, int ownerId) {
+        userService.getById(ownerId);
         return ItemMapper.toItemDto(itemRepository.create(ItemMapper.fromItemDto(itemDto, ownerId), ownerId));
     }
 

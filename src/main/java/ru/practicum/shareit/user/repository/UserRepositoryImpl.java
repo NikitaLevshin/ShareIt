@@ -1,14 +1,16 @@
 package ru.practicum.shareit.user.repository;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.NotNullException;
 import ru.practicum.shareit.exception.UserNotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Repository
 @Slf4j
@@ -72,9 +74,9 @@ public class UserRepositoryImpl implements UserRepository {
     private void validate(User user) {
         if (!users.containsKey(user.getId())) {
             if (user.getName() == null) {
-                throw new NotNullException(HttpStatus.BAD_REQUEST, "Имя пользователя не может быть пустым");
+                throw new NotNullException("Имя пользователя не может быть пустым");
             } else if (user.getEmail() == null) {
-                throw new NotNullException(HttpStatus.BAD_REQUEST, "Почта не может быть пустой");
+                throw new NotNullException("Почта не может быть пустой");
             }
         }
         if (!users.isEmpty()) {

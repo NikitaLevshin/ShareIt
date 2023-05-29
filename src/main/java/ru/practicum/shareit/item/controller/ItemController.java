@@ -5,12 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
-import javax.validation.Valid;
 import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
 @RestController
 @RequestMapping("/items")
 @AllArgsConstructor
@@ -33,13 +29,13 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemDto create(@RequestHeader ("X-Sharer-User-Id") int ownerId, @Valid @RequestBody ItemDto itemDto) {
+    public ItemDto create(@RequestHeader ("X-Sharer-User-Id") int ownerId, @RequestBody ItemDto itemDto) {
         return itemService.create(itemDto, ownerId);
     }
 
     @PatchMapping("/{id}")
     public ItemDto update(@RequestHeader ("X-Sharer-User-Id") int ownerId,
-                          @Valid @RequestBody ItemDto itemDto,
+                          @RequestBody ItemDto itemDto,
                           @PathVariable int id) {
         return  itemService.update(itemDto, ownerId, id);
     }
