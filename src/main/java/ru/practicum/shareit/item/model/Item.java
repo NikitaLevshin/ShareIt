@@ -1,14 +1,17 @@
 package ru.practicum.shareit.item.model;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 
 @Entity
-@Data
 @NoArgsConstructor
+@Getter
+@Setter
 @Table(name = "items")
 public class Item {
     @Id

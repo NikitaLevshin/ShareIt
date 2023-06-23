@@ -1,12 +1,12 @@
 package ru.practicum.shareit.booking.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 public class ItemBooking {
     private Integer id;
     private String name;

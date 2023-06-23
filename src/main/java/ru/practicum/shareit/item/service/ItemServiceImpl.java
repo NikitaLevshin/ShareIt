@@ -18,7 +18,7 @@ import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.model.ItemBooking;
+import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.mapper.UserMapper;
@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 @Slf4j
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
@@ -40,7 +41,7 @@ public class ItemServiceImpl implements ItemService {
     private final CommentRepository commentRepository;
 
     @Override
-    public List<ItemBooking> getAllByOwner(int ownerId) {
+    public List<ItemBookingDto> getAllByOwner(int ownerId) {
         log.info("Запрос всех вещей пользователя {}", ownerId);
         userService.getById(ownerId);
         return itemRepository.findByOwnerId(ownerId).stream()
@@ -67,6 +68,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public ItemDto create(ItemDto itemDto, int ownerId) {
         log.info("Запрос на создание вещи");
         if (itemDto.getName().isBlank() || itemDto.getName() == null
@@ -81,6 +83,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public ItemDto update(ItemDto itemDto, int ownerId, int id) {
         log.info("Запрос на обновление вещи с id {}", id);
         Item item = itemRepository.getReferenceById(id);
@@ -101,7 +104,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public ItemBooking getItem(int itemId, int userId) {
+    public ItemBookingDto getItem(int itemId, int userId) {
         log.info("Запрос вещи с id {}", itemId);
         try {
             Item item = itemRepository.findById(itemId);
@@ -126,6 +129,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public CommentDto addComment(int itemId, CommentDto commentDto, int authorId) {
         Booking booking = bookingRepository.findFirstByItemIdAndBookerIdAndEndBeforeOrderByEndDesc(
                 itemId,
@@ -144,6 +148,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public void delete(int id) {
         log.info("Запрос на удаление вещи с id {}", id);
         itemRepository.deleteById(id);

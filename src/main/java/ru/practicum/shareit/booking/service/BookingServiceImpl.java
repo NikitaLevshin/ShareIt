@@ -22,6 +22,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 @Slf4j
 public class BookingServiceImpl implements BookingService {
 
@@ -43,6 +44,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public BookingDto create(BookingDto bookingDto, int userId) {
         log.info("Запрос на создание бронирования пользователем с id {}", userId);
         if (bookingDto.getStart().isAfter(bookingDto.getEnd())) {
@@ -65,6 +67,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public BookingDto approveBooking(int id, int userId, boolean approve) {
         log.info("Запрос на подтверждение бронирования с id {}", id);
         Booking booking = bookingRepository.getReferenceById(id);
