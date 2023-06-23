@@ -3,6 +3,8 @@ package ru.practicum.shareit.user.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.exception.AlreadyExistException;
 import ru.practicum.shareit.exception.UserNotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 @AllArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
@@ -34,6 +37,7 @@ public class UserServiceImpl implements UserService {
                 () -> new UserNotFoundException("Пользователь с таким id не найден")));
     }
 
+    @Transactional
     @Override
     public UserDto create(UserDto userDto) {
         if (userDto.getEmail() == null || userDto.getEmail().isBlank()) {
@@ -43,6 +47,7 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toUserDto(userRepository.save(UserMapper.fromUserDto(userDto)));
     }
 
+    @Transactional
     @Override
     public UserDto update(UserDto userDto, int id) {
         log.info("Обновляем пользователя c id {}", id);
@@ -54,10 +59,16 @@ public class UserServiceImpl implements UserService {
         }
         if (updatedUser.getEmail() == null) {
             updatedUser.setEmail(user.getEmail());
+        } else {
+            if (userRepository.findByEmail(updatedUser.getEmail()).isPresent() &&
+                    userRepository.findByEmail(updatedUser.getEmail()).get().getId() != updatedUser.getId()) {
+                throw new AlreadyExistException("Пользователь с такой почтой уже зарегистрирован");
+            }
         }
         return UserMapper.toUserDto(userRepository.save(updatedUser));
     }
 
+    @Transactional
     @Override
     public void delete(int id) {
         log.info("Удаляем пользователя с id {}", id);

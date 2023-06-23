@@ -46,4 +46,11 @@ public class ErrorHandler {
         log.debug("Возникла ошибка 404: {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handlerAlreadyExist(final AlreadyExistException e) {
+        log.debug("Возникла ошибка 500: {}", e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
 }
