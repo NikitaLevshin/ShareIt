@@ -1,7 +1,5 @@
 package ru.practicum.shareit.user;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,7 +8,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.ComponentScan;
 import ru.practicum.shareit.exception.UserNotFoundException;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -20,12 +17,12 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.when;
-import static ru.practicum.shareit.model.JsonModels.*;
-import static ru.practicum.shareit.model.TestModels.*;
-import static ru.practicum.shareit.model.TestModels.next;
+import static ru.practicum.shareit.model.JsonModels.email;
+import static ru.practicum.shareit.model.JsonModels.userName;
+import static ru.practicum.shareit.model.TestModels.user;
+import static ru.practicum.shareit.model.TestModels.userDto;
 
 @ExtendWith(MockitoExtension.class)
 @ComponentScan(basePackages = {"ru.yandex.practicum.shareit"})
