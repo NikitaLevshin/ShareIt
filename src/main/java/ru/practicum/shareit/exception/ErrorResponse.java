@@ -1,8 +1,5 @@
 package ru.practicum.shareit.exception;
 
-import javax.annotation.Generated;
-
-@Generated({})
 public class ErrorResponse {
     private final String error;
 
