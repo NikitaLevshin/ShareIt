@@ -87,9 +87,9 @@ class ItemRepositoryTest {
     private ItemRequest saveItemRequest() {
         User bookerNew = userRepository.save(booker);
         itemRequest.setRequester(bookerNew);
-        ItemRequest itemRequestGet = itemRequestRepository.save(itemRequest);
+        ItemRequest itemRequest1 = itemRequestRepository.save(itemRequest);
         itemRequest.setRequester(booker);
-        return itemRequestRepository.save(itemRequestGet);
+        return itemRequestRepository.save(itemRequest1);
     }
 
     private Comment saveComment(Item item1) {
