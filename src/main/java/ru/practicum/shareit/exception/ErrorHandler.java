@@ -7,10 +7,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.annotation.Generated;
 import javax.validation.ConstraintViolationException;
 
 @RestControllerAdvice
 @Slf4j
+@Generated({})
 public class ErrorHandler {
 
     @ExceptionHandler
@@ -45,13 +47,6 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handlerBookingNotFound(final BookingNotFoundException e) {
         log.debug("Возникла ошибка 404: {}", e.getMessage());
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handlerAlreadyExist(final AlreadyExistException e) {
-        log.debug("Возникла ошибка 500: {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 

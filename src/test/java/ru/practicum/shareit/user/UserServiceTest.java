@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -8,6 +9,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.ComponentScan;
+import ru.practicum.shareit.exception.UserNotFoundException;
+import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -16,14 +19,13 @@ import ru.practicum.shareit.user.service.UserServiceImpl;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.when;
-import static ru.practicum.shareit.model.JsonModels.email;
-import static ru.practicum.shareit.model.JsonModels.userName;
-import static ru.practicum.shareit.model.TestModels.user;
-import static ru.practicum.shareit.model.TestModels.userDto;
+import static ru.practicum.shareit.model.JsonModels.*;
+import static ru.practicum.shareit.model.TestModels.*;
+import static ru.practicum.shareit.model.TestModels.next;
 
 @ExtendWith(MockitoExtension.class)
 @ComponentScan(basePackages = {"ru.yandex.practicum.shareit"})
@@ -62,8 +64,33 @@ class UserServiceTest {
 
         UserDto userDto1 = userService.getById(user.getId());
 
-        Assertions.assertEquals(userDto1.getName(), userName);
-        Assertions.assertEquals(userDto1.getEmail(), email);
+        assertEquals(userDto1.getName(), userName);
+        assertEquals(userDto1.getEmail(), email);
+    }
+
+    @Test
+    void getUserWithWrongIdTest() {
+
+        UserNotFoundException userNotFoundException = assertThrows(UserNotFoundException.class,
+                () -> userService.getById(2));
+
+        assertNotNull(userNotFoundException.getMessage());
+    }
+
+    @Test
+    void updateUserTest() {
+        when(userRepository.getReferenceById(anyInt())).thenReturn(user);
+
+        UserDto userDto1 = new UserDto(1, "updatedName", "updated@yandex.ru");
+        user.setName("updatedName");
+        user.setEmail("updated@yandex.ru");
+        when(userRepository.save(Mockito.any(User.class))).thenReturn(user);
+        UserDto updatedUser = userService.update(userDto1, user.getId());
+
+        assertEquals(updatedUser.getName(), "updatedName");
+
+        user.setName(userName);
+        user.setEmail(email);
     }
 
     @Test

@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.exception.AlreadyExistException;
 import ru.practicum.shareit.exception.UserNotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -51,7 +50,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto update(UserDto userDto, int id) {
         log.info("Обновляем пользователя c id {}", id);
-        User user = UserMapper.fromUserDto(getById(id));
+        User user = userRepository.getReferenceById(id);
         User updatedUser = UserMapper.fromUserDto(userDto);
         updatedUser.setId(id);
         if (updatedUser.getName() == null) {
@@ -59,11 +58,6 @@ public class UserServiceImpl implements UserService {
         }
         if (updatedUser.getEmail() == null) {
             updatedUser.setEmail(user.getEmail());
-        } else {
-            if (userRepository.findByEmail(updatedUser.getEmail()).isPresent() &&
-                    userRepository.findByEmail(updatedUser.getEmail()).get().getId() != updatedUser.getId()) {
-                throw new AlreadyExistException("Пользователь с такой почтой уже зарегистрирован");
-            }
         }
         return UserMapper.toUserDto(userRepository.save(updatedUser));
     }

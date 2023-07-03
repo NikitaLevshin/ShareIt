@@ -101,6 +101,22 @@ public class ItemControllerTest {
     }
 
     @Test
+    public void getItemByIdTest() throws Exception {
+            when(itemService.getItem(anyInt(), anyInt())).thenReturn(new ItemBookingDto(
+                    1, itemName, itemDescription, user.getId(), available, null, null, null)
+            );
+        mockMvc.perform(get(url + "/{itemId}", 1)
+                        .header("X-Sharer-User-Id", user.getId()))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+
+                    .andExpect(jsonPath("$.id").value(1))
+                    .andExpect(jsonPath("$.name").value(itemName))
+                    .andExpect(jsonPath("$.description").value(itemDescription));
+
+    }
+
+    @Test
     public void searchItemsTest() throws Exception {
         when(itemService.search(anyString(), anyInt(), anyInt()))
                 .thenReturn(ItemMapper.toItemDtoList(List.of(item, itemUpd)));
