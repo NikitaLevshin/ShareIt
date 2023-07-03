@@ -19,7 +19,7 @@ public class BookingDtoTest {
     private JacksonTester<BookingDto> jacksonTester;
 
     @Test
-    public void BookingToDtoTest() throws IOException {
+    public void bookingToDtoTest() throws IOException {
         BookingDto bookingDto = BookingMapper.toBookingDto(last);
 
         JsonContent<BookingDto> content = jacksonTester.write(bookingDto);

@@ -8,9 +8,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.ComponentScan;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.service.UserServiceImpl;
@@ -18,10 +16,14 @@ import ru.practicum.shareit.user.service.UserServiceImpl;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-import static ru.practicum.shareit.model.JsonModels.*;
-import static ru.practicum.shareit.model.TestModels.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.when;
+import static ru.practicum.shareit.model.JsonModels.email;
+import static ru.practicum.shareit.model.JsonModels.userName;
+import static ru.practicum.shareit.model.TestModels.user;
+import static ru.practicum.shareit.model.TestModels.userDto;
 
 @ExtendWith(MockitoExtension.class)
 @ComponentScan(basePackages = {"ru.yandex.practicum.shareit"})
