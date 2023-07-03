@@ -6,6 +6,7 @@ import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,12 +23,13 @@ public class ItemRequest {
     @Column(name = "request_id")
     private int id;
     @Column
+    @NotNull
     private String description;
 
     @OneToOne
     @JoinColumn(name = "requester")
     private User requester;
-    @FutureOrPresent
+
     private LocalDateTime created;
     @Transient
     private List<Item> items;
