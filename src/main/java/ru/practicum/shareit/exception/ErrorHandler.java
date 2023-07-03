@@ -68,4 +68,11 @@ public class ErrorHandler {
         log.debug("Возникла ошибка 400: {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handlerIllegalArgument(final IllegalArgumentException e) {
+        log.debug("Возникла ошибка 400: {}", e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
 }

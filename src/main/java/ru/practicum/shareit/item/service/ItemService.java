@@ -8,11 +8,11 @@ import ru.practicum.shareit.item.dto.ItemBookingDto;
 import java.util.List;
 
 public interface ItemService {
-    List<ItemBookingDto> getAllByOwner(int ownerId);
+    List<ItemBookingDto> getAllByOwner(int ownerId, int from, int size);
 
     Item getById(int id);
 
-    List<ItemDto> search(String text);
+    List<ItemDto> search(String text, int from, int size);
 
     ItemDto create(ItemDto itemDto, int ownerId);
 
