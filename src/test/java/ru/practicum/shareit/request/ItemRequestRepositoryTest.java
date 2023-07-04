@@ -62,7 +62,7 @@ class ItemRequestRepositoryTest {
         item1.setRequest(itemRequest1);
         itemRepository.save(item1);
 
-        List <ItemRequest> list = itemRequestRepository.findAllByRequesterIdIsNot(itemRequest1.getRequester().getId(),
+        List<ItemRequest> list = itemRequestRepository.findAllByRequesterIdIsNot(itemRequest1.getRequester().getId(),
                 pageable);
 
         assertEquals(list.size(), 0);
