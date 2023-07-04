@@ -132,12 +132,6 @@ class ItemServiceTest {
     void getItems() {
         when(userService.getById(anyInt())).thenReturn(UserMapper.toUserDto(booker));
         when(itemRepository.findByOwnerId(anyInt(), any())).thenReturn(List.of(item));
-        when(itemRepository.findById(anyInt())).thenReturn(item);
-        when(commentRepository.findAllByItemId(anyInt())).thenReturn(List.of(comment));
-        when(bookingRepository.findFirstByItemIdAndStartBeforeAndStatusOrderByEndDesc(anyInt(), any(), any()))
-                .thenReturn(Optional.of(last));
-        when(bookingRepository.findFirstByItemIdAndStartAfterAndStatusOrderByStartAsc(anyInt(), any(), any()))
-                .thenReturn(Optional.of(next));
         ItemMapper.toItemDto(new Item(10, itemName, itemDescription, false, user, itemRequest));
 
         List<ItemBookingDto> list = itemService.getAllByOwner(1, 0, 20);
