@@ -4,6 +4,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
+import ru.practicum.shareit.item.model.Item;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -50,5 +51,6 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
                                                                    Integer bookerId,
                                                                    LocalDateTime time);
 
+    List<Booking> findByItemIn(List<Item> items);
 
 }

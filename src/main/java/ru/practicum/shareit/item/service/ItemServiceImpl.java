@@ -32,8 +32,12 @@ import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 @Service
 @AllArgsConstructor
@@ -51,9 +55,7 @@ public class ItemServiceImpl implements ItemService {
         log.info("Запрос всех вещей пользователя {}", ownerId);
         userService.getById(ownerId);
         Pageable pageable = PageRequest.of(from, size, Sort.unsorted());
-        return itemRepository.findByOwnerId(ownerId, pageable).stream()
-                .map(item -> getItem(item.getId(), ownerId))
-                .collect(Collectors.toList());
+        return mapToItemWithBooking(itemRepository.findByOwnerId(ownerId, pageable));
     }
 
     @Override
@@ -72,7 +74,7 @@ public class ItemServiceImpl implements ItemService {
             return itemRepository.findItemByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(text, text, pageable).stream()
                     .filter(Item::getAvailable)
                     .map(ItemMapper::toItemDto)
-                    .collect(Collectors.toList());
+                    .collect(toList());
         }
     }
 
@@ -134,7 +136,7 @@ public class ItemServiceImpl implements ItemService {
                     item,
                     last,
                     next,
-                    comments.stream().map(CommentMapper::toDto).collect(Collectors.toList())
+                    comments.stream().map(CommentMapper::toDto).collect(toList())
             );
         } catch (NullPointerException e) {
             throw new UserNotFoundException("Вещи с таким id не существует");
@@ -165,5 +167,33 @@ public class ItemServiceImpl implements ItemService {
     public void delete(int id) {
         log.info("Запрос на удаление вещи с id {}", id);
         itemRepository.deleteById(id);
+    }
+
+    private List<ItemBookingDto> mapToItemWithBooking(List<Item> items) {
+        Map<Item, List<Comment>> comments = commentRepository.findByItemIn(items, Sort.by(Sort.Direction.DESC, "created"))
+                .stream().collect((groupingBy(Comment::getItem, toList())));
+        Map<Item, List<Booking>> approvedBookings = bookingRepository.findByItemIn(items)
+                .stream().collect(groupingBy(Booking::getItem, toList()));
+        List<ItemBookingDto> itemBookingDtoList = new ArrayList<>();
+        for (Item item : items) {
+            ItemWithBookingDto lastBooking = BookingMapper.toItemWithBookingDto(
+                    approvedBookings.getOrDefault(item, new ArrayList<>())
+                            .stream()
+                            .filter(booking -> booking.getStart().isBefore(LocalDateTime.now()))
+                            .filter(booking -> booking.getStatus() == Status.APPROVED)
+                            .max(Comparator.comparing(Booking::getStart)));
+            ItemWithBookingDto nextBooking = BookingMapper.toItemWithBookingDto(
+                    approvedBookings.getOrDefault(item, new ArrayList<>())
+                            .stream()
+                            .filter(booking -> booking.getStart().isAfter(LocalDateTime.now()))
+                            .filter(booking -> booking.getStatus() == Status.APPROVED)
+                            .min(Comparator.comparing(Booking::getStart)));
+            List<CommentDto> commentDtoList = comments.getOrDefault(item, new ArrayList<>())
+                    .stream()
+                    .map(CommentMapper::toDto)
+                    .collect(toList());
+            itemBookingDtoList.add(ItemMapper.toItemBookingDto(item, lastBooking, nextBooking, commentDtoList));
+        }
+        return itemBookingDtoList;
     }
 }
