@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user;
 
 import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -36,6 +37,7 @@ public class UserControllerTest {
     private UserService userService;
 
     @Test
+    @DisplayName("Получение всех пользователей")
     public void getUsersTest() throws Exception {
         when(userService.getAll()).thenReturn(Stream.of(user).map(UserMapper::toUserDto).collect(Collectors.toList()));
 
@@ -52,6 +54,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @DisplayName("Создание пользователя")
     public void addUserTest() throws Exception {
         String userJson = createUserJson(userName, email);
 
@@ -68,6 +71,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @DisplayName("Обновление пользователя")
     public void updateUserTest() throws Exception {
         when(userService.update(any(), anyInt())).thenReturn(UserMapper.toUserDto(booker));
 
@@ -84,6 +88,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @DisplayName("Получение пользователя по id")
     public void getUserTest() throws Exception {
         when(userService.getById(anyInt())).thenReturn(userDto);
 
@@ -100,6 +105,7 @@ public class UserControllerTest {
 
 
     @Test
+    @DisplayName("Удаление пользователя")
     public void deleteUserTest() throws Exception {
 
         mockMvc.perform(delete("/users/{userId}", anyInt()))

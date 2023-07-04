@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking;
 
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -41,6 +42,7 @@ public class BookingIntegrationTest {
     private BookingService bookingService;
 
     @Test
+    @DisplayName("Получение бронирования по id пользователя")
     void bookingGetByUserTest() {
         User user1 = userRepository.save(user);
         User requester = userRepository.save(booker);

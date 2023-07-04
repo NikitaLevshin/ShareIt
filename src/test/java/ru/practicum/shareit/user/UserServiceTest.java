@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -46,6 +47,7 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Создание пользователя")
     void addUserTest() {
         when(userRepository.save(Mockito.any(User.class))).thenReturn(user);
 
@@ -56,6 +58,7 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Получение пользователя по id")
     void getUserTest() {
         when(userRepository.findById(anyInt())).thenReturn(Optional.of(user));
 
@@ -66,6 +69,7 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Получение пользователя с неверным id")
     void getUserWithWrongIdTest() {
 
         UserNotFoundException userNotFoundException = assertThrows(UserNotFoundException.class,
@@ -75,6 +79,7 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Обновление пользователя")
     void updateUserTest() {
         when(userRepository.getReferenceById(anyInt())).thenReturn(user);
 
@@ -91,6 +96,7 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Удаление пользователя")
     void deleteUserTest() {
         assertDoesNotThrow(() -> userService.delete(user.getId()));
     }

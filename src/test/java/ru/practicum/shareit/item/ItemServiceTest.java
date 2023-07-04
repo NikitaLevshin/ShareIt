@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -51,6 +52,7 @@ class ItemServiceTest {
 
 
     @Test
+    @DisplayName("Создание вещи")
     void addItem() {
         when(userService.getById(anyInt())).thenReturn(UserMapper.toUserDto(booker));
         when(itemRepository.save(any())).thenReturn(item);
@@ -62,6 +64,7 @@ class ItemServiceTest {
     }
 
     @Test
+    @DisplayName("Создание вещи с пустым описанием")
     void addItemNullDescription() {
             itemDto.setDescription(null);
 
@@ -74,6 +77,7 @@ class ItemServiceTest {
     }
 
     @Test
+    @DisplayName("Обновление вещи")
     void updateItem() {
         when(itemRepository.save(any())).thenReturn(itemUpd);
         when(itemRepository.getReferenceById(anyInt())).thenReturn(item);
@@ -85,11 +89,13 @@ class ItemServiceTest {
     }
 
     @Test
+    @DisplayName("Удаление вещи")
     void deleteItem() {
         assertDoesNotThrow(() -> itemService.delete(1));
     }
 
     @Test
+    @DisplayName("Получение вещи")
     void getItem() {
         when(itemRepository.findById(anyInt())).thenReturn(item);
         when(commentRepository.findAllByItemId(anyInt())).thenReturn(List.of(comment));
@@ -111,6 +117,7 @@ class ItemServiceTest {
     }
 
     @Test
+    @DisplayName("Поиск вещей")
     void searchItems() {
         when(itemRepository.findItemByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(any(), any(), any())).thenReturn(List.of(item));
 
@@ -121,6 +128,7 @@ class ItemServiceTest {
     }
 
     @Test
+    @DisplayName("Получение списка всех вещей")
     void getItems() {
         when(userService.getById(anyInt())).thenReturn(UserMapper.toUserDto(booker));
         when(itemRepository.findByOwnerId(anyInt(), any())).thenReturn(List.of(item));

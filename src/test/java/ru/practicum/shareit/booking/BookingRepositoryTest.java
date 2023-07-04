@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -31,6 +32,7 @@ class BookingRepositoryTest {
     private final Pageable pageable = PageRequest.of(0, 20, Sort.unsorted());
 
     @Test
+    @DisplayName("Получение бронирования по id букера")
     void findAllByBookerIdOrderByStartDescTest() {
         List<Booking> listAll = createBooking();
 
@@ -44,6 +46,7 @@ class BookingRepositoryTest {
     }
 
     @Test
+    @DisplayName("Получение бронирования по id букера до определенной даты")
     void findAllByBookerIdAndEndBeforeOrderByStartDescTest() {
         List<Booking> listAll = createBooking();
 
@@ -58,6 +61,7 @@ class BookingRepositoryTest {
     }
 
     @Test
+    @DisplayName("Получение бронирования по id букера после даты и окончанием до даты")
     void findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartAscTest() {
         List<Booking> listAll = createBooking();
 
@@ -72,6 +76,7 @@ class BookingRepositoryTest {
     }
 
     @Test
+    @DisplayName("Получение подтвержденного бронирования владельцем")
     void findAllByItemOwnerIdAndStatusApprovedOrderByStartDescTest() {
         List<Booking> listAll = createBooking();
 
@@ -86,6 +91,7 @@ class BookingRepositoryTest {
     }
 
     @Test
+    @DisplayName("Получение бронирований в ожидании владельцем")
     void findAllByItemOwnerIdAndStatusWaitingOrderByStartDescTest() {
         List<Booking> listAll = createBooking();
 
@@ -99,6 +105,7 @@ class BookingRepositoryTest {
     }
 
     @Test
+    @DisplayName("Получение отказанных бронирований владельцем")
     void findAllByItemOwnerIdAndStatusRejectedOrderByStartDescTest() {
         List<Booking> listAll = createBooking();
 
@@ -112,6 +119,7 @@ class BookingRepositoryTest {
     }
 
     @Test
+    @DisplayName("Получение бронирований владельцем до определенной даты")
     void findAllByItemOwnerIdAndEndBeforeOrderByStartDescTest() {
         List<Booking> listAll = createBooking();
 
@@ -126,6 +134,7 @@ class BookingRepositoryTest {
     }
 
     @Test
+    @DisplayName("Получение бронирований владельцем после даты и до даты")
     void findAllByItemOwnerIdAndStartBeforeAndEndAfterOrderByStartDescTest() {
         List<Booking> listAll = createBooking();
 

@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -35,6 +36,7 @@ class ItemRepositoryTest {
 
 
     @Test
+    @DisplayName("Получение всех вещей владельца")
     void findAllByOwnerIdTest() {
         Item item1 = saveItem();
         List<Item> list = itemRepository.findByOwnerId(item1.getOwner().getId(), pageable);
@@ -43,6 +45,7 @@ class ItemRepositoryTest {
     }
 
     @Test
+    @DisplayName("Поиск вещей по имени и описанию")
     void findItemByNameAndDescriptionTest() {
         Item item1 = saveItem();
         List<Item> list = itemRepository.findItemByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
@@ -54,6 +57,7 @@ class ItemRepositoryTest {
     }
 
     @Test
+    @DisplayName("Получение вещей по запросу")
     void findAllByItemRequestIdTest() {
         Item item1 = saveItem();
         ItemRequest itemRequest1 = saveItemRequest();
@@ -66,6 +70,7 @@ class ItemRepositoryTest {
     }
 
     @Test
+    @DisplayName("Получение всех комментариев")
     void findAllCommentsByItemIdTest() {
         Item item1 = saveItem();
         Comment comment1 = saveComment(item1);

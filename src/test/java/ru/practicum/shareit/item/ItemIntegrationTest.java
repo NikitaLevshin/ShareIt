@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -40,7 +41,8 @@ public class ItemIntegrationTest {
     private ItemService itemService;
 
     @Test
-    void getItemRequestsAllTest() {
+    @DisplayName("Получение всех вещей")
+    void getItemAllTest() {
         User userNew = userRepository.save(user);
         Item item = itemRepository.save(new Item(1, itemName, itemDescription, true, userNew, null));
         List<ItemBookingDto> list = itemService.getAllByOwner(userNew.getId(), 0, 20);
@@ -53,6 +55,7 @@ public class ItemIntegrationTest {
     }
 
     @Test
+    @DisplayName("Создание комментария")
     public void addCommentTest() {
         User userNew = userRepository.save(user);
         User requester = userRepository.save(booker);

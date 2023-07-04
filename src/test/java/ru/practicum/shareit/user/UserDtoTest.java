@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
@@ -19,6 +20,7 @@ public class UserDtoTest {
     private JacksonTester<UserDto> jacksonTester;
 
     @Test
+    @DisplayName("Конвертация пользователя в DTO")
     public void itemRequestDtoTest() throws IOException {
         JsonContent<UserDto> content = jacksonTester.write(userDto);
 

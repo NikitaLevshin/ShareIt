@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
@@ -19,6 +20,7 @@ public class BookingDtoTest {
     private JacksonTester<BookingDto> jacksonTester;
 
     @Test
+    @DisplayName("Конвертация бронирования в DTO")
     public void bookingToDtoTest() throws IOException {
         BookingDto bookingDto = BookingMapper.toBookingDto(last);
 

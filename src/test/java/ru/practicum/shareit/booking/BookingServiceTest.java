@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -45,6 +46,7 @@ class BookingServiceTest {
     private BookingServiceImpl bookingService;
 
     @Test
+    @DisplayName("Получение бронирования")
     void getBookingTest() {
         when(bookingRepository.findById(anyInt())).thenReturn(Optional.of(next));
 
@@ -55,6 +57,7 @@ class BookingServiceTest {
     }
 
     @Test
+    @DisplayName("Создание бронирования")
     void createBookingTest() {
         when(bookingRepository.save(any())).thenReturn(next);
         when(userService.getById(anyInt())).thenReturn(userDto);
@@ -69,6 +72,7 @@ class BookingServiceTest {
     }
 
     @Test
+    @DisplayName("Подтверждение бронирования с неверным статусом")
     void approveBookingWrongStatusTest() {
         when(bookingRepository.getReferenceById(anyInt())).thenReturn(next);
 
@@ -79,6 +83,7 @@ class BookingServiceTest {
     }
 
     @Test
+    @DisplayName("Подтверждение бронирования с неверным владельцем")
     void approveBookingWrongOwnerTest() {
         when(bookingRepository.getReferenceById(anyInt())).thenReturn(next);
 
@@ -92,6 +97,7 @@ class BookingServiceTest {
     }
 
     @Test
+    @DisplayName("Подтверждение бронирования")
     void approveBookingTest() {
         when(bookingRepository.getReferenceById(anyInt())).thenReturn(next);
         when(bookingRepository.save(any())).thenReturn(next);
@@ -108,6 +114,7 @@ class BookingServiceTest {
     }
 
     @Test
+    @DisplayName("Получение бронирований пользователя")
     void getUserBookingsTest() {
         when(userService.getById(anyInt())).thenReturn(UserMapper.toUserDto(booker));
         when(bookingRepository.findAllByBookerIdOrderByStartDesc(anyInt(), any())).thenReturn(List.of(last, next));
@@ -119,6 +126,7 @@ class BookingServiceTest {
     }
 
     @Test
+    @DisplayName("Получение бронирований владельца")
     void getOwnerBookingsTest() {
         when(userService.getById(anyInt())).thenReturn(UserMapper.toUserDto(booker));
         when(bookingRepository.findAllByItemOwnerIdOrderByStartDesc(anyInt(), any())).thenReturn(List.of(last, next));

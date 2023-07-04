@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -40,6 +41,7 @@ public class ItemControllerTest {
     private MockMvc mockMvc;
 
     @Test
+    @DisplayName("Создание вещи")
     public void addItemTest() throws Exception {
         String addItem = createItemDtoJson(itemName, itemDescription, available);
         when(itemService.create(any(), anyInt())).thenReturn(itemDto);
@@ -57,6 +59,7 @@ public class ItemControllerTest {
     }
 
     @Test
+    @DisplayName("Обновление вещи")
     public void updateItemTest() throws Exception {
         when(itemService.update(any(), anyInt(), anyInt())).thenReturn(ItemMapper.toItemDto(itemUpd));
 
@@ -78,11 +81,13 @@ public class ItemControllerTest {
     }
 
     @Test
+    @DisplayName("Удаление вещи")
     public void deleteItemTest() throws Exception {
         mockMvc.perform(delete(url + "/{itemId}", 1)).andDo(print()).andExpect(status().isOk());
     }
 
     @Test
+    @DisplayName("Получение списка вещей")
     public void getItemsTest() throws Exception {
         when(itemService.getAllByOwner(anyInt(), anyInt(), anyInt()))
                 .thenReturn(List.of(new ItemBookingDto(1, itemName, itemDescription, user.getId(),
@@ -101,6 +106,7 @@ public class ItemControllerTest {
     }
 
     @Test
+    @DisplayName("Получение вещи по id")
     public void getItemByIdTest() throws Exception {
             when(itemService.getItem(anyInt(), anyInt())).thenReturn(new ItemBookingDto(
                     1, itemName, itemDescription, user.getId(), available, null, null, null)
@@ -117,6 +123,7 @@ public class ItemControllerTest {
     }
 
     @Test
+    @DisplayName("Поиск вещей по описанию")
     public void searchItemsTest() throws Exception {
         when(itemService.search(anyString(), anyInt(), anyInt()))
                 .thenReturn(ItemMapper.toItemDtoList(List.of(item, itemUpd)));

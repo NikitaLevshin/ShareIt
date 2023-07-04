@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
@@ -24,6 +25,7 @@ public class ItemCommentDtoTest {
     private JacksonTester<CommentDto> jacksonCommentTester1;
 
     @Test
+    @DisplayName("Конвертация вещи в DTO")
     public void itemDtoJsonTest() throws IOException {
         JsonContent<ItemDto> result = jacksonItemTester.write(itemDto);
 
@@ -35,7 +37,8 @@ public class ItemCommentDtoTest {
     }
 
     @Test
-    public void itemRequestDtoTest() throws IOException {
+    @DisplayName("Конвертация комментария в DTO")
+    public void itemCommentDtoTest() throws IOException {
         JsonContent<CommentDto> content = jacksonCommentTester1.write(commentDto);
 
         assertThat(content).hasJsonPath("$.id");

@@ -1,6 +1,7 @@
 package ru.practicum.shareit.request;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -45,6 +46,7 @@ class ItemRequestRepositoryTest {
 
 
     @Test
+    @DisplayName("Получение всех запросов от создавшего запрос")
     void findAllByRequesterTest() {
         item1.setRequest(itemRequest1);
         itemRepository.save(item1);
@@ -56,12 +58,12 @@ class ItemRequestRepositoryTest {
 
 
     @Test
+    @DisplayName("Получение всех запросов без id создавшего запрос")
     void findAllByRequesterIdIsNotTest() {
         item1.setRequest(itemRequest1);
         itemRepository.save(item1);
 
-        List<ItemRequest> list = new ArrayList<>();
-        list = itemRequestRepository.findAllByRequesterIdIsNot(itemRequest1.getRequester().getId(),
+        List <ItemRequest> list = itemRequestRepository.findAllByRequesterIdIsNot(itemRequest1.getRequester().getId(),
                 pageable);
 
         assertEquals(list.size(), 0);

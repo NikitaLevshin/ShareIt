@@ -1,6 +1,7 @@
 package ru.practicum.shareit.request;
 
 import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -41,6 +42,7 @@ public class ItemRequestControllerTest {
     private ItemRequestService itemRequestService;
 
     @Test
+    @DisplayName("Получение всех запросов")
     public void getItemRequestsAll() throws Exception {
         when(itemRequestService.getAllRequests(anyInt(), anyInt(), anyInt())).thenReturn(List.of(itemRequestDto));
 
@@ -56,6 +58,7 @@ public class ItemRequestControllerTest {
     }
 
     @Test
+    @DisplayName("Получение всех запросов от создавшего запрос")
     public void getItemRequestsForRequester() throws Exception {
         when(itemRequestService.getRequestsByRequester(anyInt())).thenReturn(List.of(itemRequestDto));
 
@@ -71,6 +74,7 @@ public class ItemRequestControllerTest {
     }
 
     @Test
+    @DisplayName("Получение запроса по id")
     public void getItemRequestById() throws Exception {
         when(itemRequestService.getRequestById(anyInt(), anyInt())).thenReturn(itemRequestDto);
 
@@ -85,6 +89,7 @@ public class ItemRequestControllerTest {
     }
 
     @Test
+    @DisplayName("Создание запроса")
     public void addItemRequest() throws Exception {
         String requestJson = createRequestJson(requestDescription);
 

@@ -1,5 +1,6 @@
 package ru.practicum.shareit.request;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -40,6 +41,7 @@ public class ItemRequestIntegrationTest {
     private ItemRequestService itemRequestService;
 
     @Test
+    @DisplayName("Получение всех запросов")
     void getItemRequestsAllTest() {
         User userNew = userRepository.save(user);
         User requester = userRepository.save(booker);

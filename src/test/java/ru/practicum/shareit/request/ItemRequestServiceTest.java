@@ -1,5 +1,6 @@
 package ru.practicum.shareit.request;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -39,6 +40,7 @@ class ItemRequestServiceTest {
     private ItemRequestServiceImpl itemRequestService;
 
     @Test
+    @DisplayName("Получение всех запросов")
     void getItemRequestsAllTest() {
         when(userService.getById(anyInt())).thenReturn(UserMapper.toUserDto(booker));
 
@@ -48,6 +50,7 @@ class ItemRequestServiceTest {
     }
 
     @Test
+    @DisplayName("Получение всех запросов создавшим запрос")
     void getItemRequestsForRequester() {
         when(userService.getById(anyInt())).thenReturn(UserMapper.toUserDto(booker));
         when(itemRepository.findByRequest_Id(anyInt())).thenReturn(new ArrayList<>());
@@ -59,6 +62,7 @@ class ItemRequestServiceTest {
     }
 
     @Test
+    @DisplayName("Получение запроса")
     void getItemRequest() {
         when(userService.getById(anyInt())).thenReturn(UserMapper.toUserDto(booker));
         when(itemRequestRepository.findById(anyInt())).thenReturn(Optional.of(itemRequest));
@@ -70,6 +74,7 @@ class ItemRequestServiceTest {
     }
 
     @Test
+    @DisplayName("Создание запроса")
     void addItemRequestTest() {
         when(userService.getById(anyInt())).thenReturn(UserMapper.toUserDto(booker));
         when(itemRequestRepository.save(any())).thenReturn(itemRequest);

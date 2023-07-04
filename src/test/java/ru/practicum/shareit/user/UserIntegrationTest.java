@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -28,6 +29,7 @@ public class UserIntegrationTest {
     private UserServiceImpl userService;
 
     @Test
+    @DisplayName("Получение всех пользователей")
     public void getUsersIntegrationTest() {
         User userNew = userRepository.save(user);
         List<UserDto> list = userService.getAll();

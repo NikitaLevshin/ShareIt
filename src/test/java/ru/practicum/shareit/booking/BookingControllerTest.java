@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking;
 
 import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -38,6 +39,7 @@ public class BookingControllerTest {
     private BookingService bookingService;
 
     @Test
+    @DisplayName("Создание бронирования")
     public void createTest() throws Exception {
         when(bookingService.create(any(), anyInt())).thenReturn(BookingMapper.toBookingDto(last));
 
@@ -57,6 +59,7 @@ public class BookingControllerTest {
     }
 
     @Test
+    @DisplayName("Подтверждение бронирования")
     public void approveTest() throws Exception {
         when(bookingService.approveBooking(anyInt(), anyInt(), anyBoolean())).thenReturn(BookingMapper.toBookingDto(last));
 
@@ -69,6 +72,7 @@ public class BookingControllerTest {
     }
 
     @Test
+    @DisplayName("Получение бронирования")
     public void getBookingTest() throws Exception {
         when(bookingService.get(anyInt(), anyInt())).thenReturn(BookingMapper.toBookingDto(last));
 
@@ -84,6 +88,7 @@ public class BookingControllerTest {
     }
 
     @Test
+    @DisplayName("Получение бронирования по id пользователя")
     public void getUserBookingTest() throws Exception {
         when(bookingService.getByUserId(anyInt(), anyInt(), anyInt(), any())).thenReturn(BookingMapper.toDtoList(List.of(last)));
 
@@ -99,6 +104,7 @@ public class BookingControllerTest {
     }
 
     @Test
+    @DisplayName("Получение бронирования владельцем")
     public void getOwnerBookingTest() throws Exception {
         when(bookingService.getByOwnerId(anyInt(), anyInt(), anyInt(), any())).thenReturn(BookingMapper.toDtoList(List.of(last)));
 
