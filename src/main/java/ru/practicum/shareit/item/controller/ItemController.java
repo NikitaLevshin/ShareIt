@@ -8,6 +8,8 @@ import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
@@ -17,8 +19,10 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping
-    public List<ItemBookingDto> getAllByOwner(@RequestHeader("X-Sharer-User-Id") int userId) {
-        return itemService.getAllByOwner(userId);
+    public List<ItemBookingDto> getAllByOwner(@RequestHeader("X-Sharer-User-Id") Integer userId,
+                                              @RequestParam(defaultValue = "0") @Min(0) Integer from,
+                                              @RequestParam(defaultValue = "20") @Min(1) @Max(100) Integer size) {
+        return itemService.getAllByOwner(userId, from, size);
     }
 
     @GetMapping("/{itemId}")
@@ -28,8 +32,10 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> search(@RequestParam String text) {
-        return itemService.search(text);
+    public List<ItemDto> search(@RequestParam String text,
+                                @RequestParam(defaultValue = "0") @Min(0) Integer from,
+                                @RequestParam(defaultValue = "20") @Min(1) @Max(100) Integer size) {
+        return itemService.search(text, from, size);
     }
 
     @PostMapping

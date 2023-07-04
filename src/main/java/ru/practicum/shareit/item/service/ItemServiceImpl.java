@@ -2,6 +2,9 @@ package ru.practicum.shareit.item.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.ItemWithBookingDto;
@@ -13,22 +16,28 @@ import ru.practicum.shareit.exception.NotNullException;
 import ru.practicum.shareit.exception.UserNotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 @Service
 @AllArgsConstructor
@@ -39,14 +48,14 @@ public class ItemServiceImpl implements ItemService {
     private final UserService userService;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestRepository itemRequestRepository;
 
     @Override
-    public List<ItemBookingDto> getAllByOwner(int ownerId) {
+    public List<ItemBookingDto> getAllByOwner(int ownerId, int from, int size) {
         log.info("Запрос всех вещей пользователя {}", ownerId);
         userService.getById(ownerId);
-        return itemRepository.findByOwnerId(ownerId).stream()
-                .map(item -> getItem(item.getId(), ownerId))
-                .collect(Collectors.toList());
+        Pageable pageable = PageRequest.of(from, size, Sort.unsorted());
+        return mapToItemWithBooking(itemRepository.findByOwnerId(ownerId, pageable));
     }
 
     @Override
@@ -58,13 +67,15 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ItemDto> search(String text) {
+    public List<ItemDto> search(String text, int from, int size) {
         if (text.isBlank()) return new ArrayList<>();
-        else
-            return itemRepository.findItemByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(text, text).stream()
+        else {
+            Pageable pageable = PageRequest.of(from, size, Sort.unsorted());
+            return itemRepository.findItemByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(text, text, pageable).stream()
                     .filter(Item::getAvailable)
                     .map(ItemMapper::toItemDto)
-                    .collect(Collectors.toList());
+                    .collect(toList());
+        }
     }
 
     @Override
@@ -79,7 +90,11 @@ public class ItemServiceImpl implements ItemService {
             throw new NotNullException("Поле available не может быть пустым");
         }
         User user = UserMapper.fromUserDto(userService.getById(ownerId));
-        return ItemMapper.toItemDto(itemRepository.save(ItemMapper.fromItemDto(itemDto, user)));
+        ItemRequest itemRequest = itemDto.getRequestId() != null ?
+                itemRequestRepository.findById(
+                        itemDto.getRequestId()).orElseThrow(
+                        () -> new UserNotFoundException("Такого запроса нет")) : null;
+        return ItemMapper.toItemDto(itemRepository.save(ItemMapper.fromItemDto(itemDto, user, itemRequest)));
     }
 
     @Override
@@ -121,7 +136,7 @@ public class ItemServiceImpl implements ItemService {
                     item,
                     last,
                     next,
-                    comments.stream().map(CommentMapper::toDto).collect(Collectors.toList())
+                    comments.stream().map(CommentMapper::toDto).collect(toList())
             );
         } catch (NullPointerException e) {
             throw new UserNotFoundException("Вещи с таким id не существует");
@@ -152,5 +167,33 @@ public class ItemServiceImpl implements ItemService {
     public void delete(int id) {
         log.info("Запрос на удаление вещи с id {}", id);
         itemRepository.deleteById(id);
+    }
+
+    private List<ItemBookingDto> mapToItemWithBooking(List<Item> items) {
+        Map<Item, List<Comment>> comments = commentRepository.findByItemIn(items, Sort.by(Sort.Direction.DESC, "created"))
+                .stream().collect((groupingBy(Comment::getItem, toList())));
+        Map<Item, List<Booking>> approvedBookings = bookingRepository.findByItemIn(items)
+                .stream().collect(groupingBy(Booking::getItem, toList()));
+        List<ItemBookingDto> itemBookingDtoList = new ArrayList<>();
+        for (Item item : items) {
+            ItemWithBookingDto lastBooking = BookingMapper.toItemWithBookingDto(
+                    approvedBookings.getOrDefault(item, new ArrayList<>())
+                            .stream()
+                            .filter(booking -> booking.getStart().isBefore(LocalDateTime.now()))
+                            .filter(booking -> booking.getStatus() == Status.APPROVED)
+                            .max(Comparator.comparing(Booking::getStart)));
+            ItemWithBookingDto nextBooking = BookingMapper.toItemWithBookingDto(
+                    approvedBookings.getOrDefault(item, new ArrayList<>())
+                            .stream()
+                            .filter(booking -> booking.getStart().isAfter(LocalDateTime.now()))
+                            .filter(booking -> booking.getStatus() == Status.APPROVED)
+                            .min(Comparator.comparing(Booking::getStart)));
+            List<CommentDto> commentDtoList = comments.getOrDefault(item, new ArrayList<>())
+                    .stream()
+                    .map(CommentMapper::toDto)
+                    .collect(toList());
+            itemBookingDtoList.add(ItemMapper.toItemBookingDto(item, lastBooking, nextBooking, commentDtoList));
+        }
+        return itemBookingDtoList;
     }
 }

@@ -6,6 +6,7 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
@@ -16,32 +17,36 @@ public class BookingController {
     private final BookingService bookingService;
 
     @GetMapping
-    public List<BookingDto> getBookings(@RequestHeader("X-Sharer-User-Id") Integer userId,
-                                     @RequestParam(required = false) String state) {
-        return bookingService.getByUserId(userId, state);
+    public List<BookingDto> getBookings(@Valid @RequestParam(defaultValue = "0") @Min(0) int from,
+                                        @RequestParam(defaultValue = "20") @Min(1) int size,
+                                        @RequestHeader("X-Sharer-User-Id") int userId,
+                                        @RequestParam(required = false) String state) {
+        return bookingService.getByUserId(from, size, userId, state);
     }
 
     @GetMapping("/owner")
-    public List<BookingDto> getBookingsOwner(@RequestHeader("X-Sharer-User-Id") Integer userId,
-                                          @RequestParam(required = false) String state) {
-        return bookingService.getByOwnerId(userId, state);
+    public List<BookingDto> getBookingsOwner(@Valid @RequestParam(defaultValue = "0") @Min(0) int from,
+                                             @RequestParam(defaultValue = "20") @Min(1) int size,
+                                             @RequestHeader("X-Sharer-User-Id") int userId,
+                                             @RequestParam(required = false) String state) {
+        return bookingService.getByOwnerId(from, size, userId, state);
     }
 
     @GetMapping("/{bookingId}")
-    public BookingDto getBooking(@PathVariable Integer bookingId,
-                              @RequestHeader("X-Sharer-User-Id") Integer userId) {
+    public BookingDto getBooking(@PathVariable int bookingId,
+                              @RequestHeader("X-Sharer-User-Id") int userId) {
         return bookingService.get(bookingId, userId);
     }
 
     @PostMapping
     public BookingDto addBooking(@Valid @RequestBody(required = false) BookingDto bookingDto,
-                              @RequestHeader("X-Sharer-User-Id") Integer userId) {
+                              @RequestHeader("X-Sharer-User-Id") int userId) {
         return bookingService.create(bookingDto, userId);
     }
 
     @PatchMapping("/{bookingId}")
-    public BookingDto approvedBooking(@PathVariable Integer bookingId,
-                                   @RequestHeader("X-Sharer-User-Id") Integer userId,
+    public BookingDto approvedBooking(@PathVariable int bookingId,
+                                   @RequestHeader("X-Sharer-User-Id") int userId,
                                    @RequestParam Boolean approved) {
         return bookingService.approveBooking(bookingId, userId, approved);
     }

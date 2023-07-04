@@ -50,13 +50,6 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handlerAlreadyExist(final AlreadyExistException e) {
-        log.debug("Возникла ошибка 500: {}", e.getMessage());
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handlerExceptions(final Exception e) {
         log.debug("Возникла ошибка 500: {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
@@ -65,6 +58,13 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handlerNotValidArgument(final MethodArgumentNotValidException e) {
+        log.debug("Возникла ошибка 400: {}", e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handlerIllegalArgument(final IllegalArgumentException e) {
         log.debug("Возникла ошибка 400: {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
