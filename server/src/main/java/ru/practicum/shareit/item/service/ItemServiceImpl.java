@@ -54,7 +54,7 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemBookingDto> getAllByOwner(int ownerId, int from, int size) {
         log.info("Запрос всех вещей пользователя {}", ownerId);
         userService.getById(ownerId);
-        Pageable pageable = PageRequest.of(from, size, Sort.unsorted());
+        Pageable pageable = PageRequest.of(from / size, size, Sort.by(Sort.Direction.ASC, "id"));
         return mapToItemWithBooking(itemRepository.findByOwnerId(ownerId, pageable));
     }
 
