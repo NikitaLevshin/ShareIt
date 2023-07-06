@@ -62,6 +62,7 @@ class ItemServiceTest {
         assertEquals(itemDto1.getName(), itemName);
         assertEquals(itemDto1.getDescription(), itemDescription);
     }
+
     @Test
     @DisplayName("Обновление вещи")
     void updateItem() {
