@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.UserNotFoundException;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
@@ -39,9 +38,6 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public UserDto create(UserDto userDto) {
-        if (userDto.getEmail() == null || userDto.getEmail().isBlank()) {
-            throw new ValidationException("Почта не может быть пустой");
-        }
         log.info("Добавлен пользователь {}.", userDto.getName());
         return UserMapper.toUserDto(userRepository.save(UserMapper.fromUserDto(userDto)));
     }

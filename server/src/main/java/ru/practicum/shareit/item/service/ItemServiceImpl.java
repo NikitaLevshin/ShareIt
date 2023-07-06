@@ -12,7 +12,6 @@ import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
-import ru.practicum.shareit.exception.NotNullException;
 import ru.practicum.shareit.exception.UserNotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.CommentDto;
@@ -82,13 +81,6 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public ItemDto create(ItemDto itemDto, int ownerId) {
         log.info("Запрос на создание вещи");
-        if (itemDto.getName().isBlank() || itemDto.getName() == null
-                || itemDto.getDescription() == null) {
-            throw new NotNullException("Поля имя, описание и доступность не могут быть пустыми");
-        }
-        if (itemDto.getAvailable() == null) {
-            throw new NotNullException("Поле available не может быть пустым");
-        }
         User user = UserMapper.fromUserDto(userService.getById(ownerId));
         ItemRequest itemRequest = itemDto.getRequestId() != null ?
                 itemRequestRepository.findById(
@@ -154,9 +146,6 @@ public class ItemServiceImpl implements ItemService {
 
         if (booking == null) {
             throw new ValidationException("Вещь должна быть забронирована");
-        }
-        if (commentDto.getText().isBlank()) {
-            throw new ValidationException("Текст комментария не может быть пуст");
         }
         Comment comment = CommentMapper.fromCommentDto(commentDto, booking.getItem(), booking.getBooker());
         return CommentMapper.toDto(commentRepository.save(comment));

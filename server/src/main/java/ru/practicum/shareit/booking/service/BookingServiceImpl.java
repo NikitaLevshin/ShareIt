@@ -50,12 +50,6 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public BookingDto create(BookingDto bookingDto, int userId) {
         log.info("Запрос на создание бронирования пользователем с id {}", userId);
-        if (bookingDto.getStart().isAfter(bookingDto.getEnd())) {
-            throw new ValidationException("Время конца бронирования не может быть раньше времени старта");
-        }
-        if (bookingDto.getStart().equals(bookingDto.getEnd())) {
-            throw new ValidationException("Время начала и конца бронирования не могут совпадать");
-        }
         User user = UserMapper.fromUserDto(userService.getById(userId));
         Item item = itemService.getById(bookingDto.getItemId());
         if (!item.getAvailable()) {

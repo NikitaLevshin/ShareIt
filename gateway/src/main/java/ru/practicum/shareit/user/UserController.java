@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import javax.validation.Valid;
@@ -28,6 +29,9 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<Object> add(@Valid @RequestBody UserDto userDto) {
+        if (userDto.getEmail() == null || userDto.getEmail().isBlank()) {
+            throw new ValidationException("Почта не может быть пустой");
+        }
         return userClient.create(userDto);
     }
 

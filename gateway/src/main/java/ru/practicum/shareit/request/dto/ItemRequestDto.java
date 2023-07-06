@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import ru.practicum.shareit.item.dto.ItemDto;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.time.LocalDateTime;
 
@@ -16,6 +17,7 @@ public class ItemRequestDto {
 
     private int id;
 
+    @NotNull
     private String description;
 
     private int requesterId;

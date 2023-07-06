@@ -9,7 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.repository.BookingRepository;
-import ru.practicum.shareit.exception.NotNullException;
 import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
@@ -24,7 +23,8 @@ import ru.practicum.shareit.user.service.UserService;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
@@ -62,20 +62,6 @@ class ItemServiceTest {
         assertEquals(itemDto1.getName(), itemName);
         assertEquals(itemDto1.getDescription(), itemDescription);
     }
-
-    @Test
-    @DisplayName("Создание вещи с пустым описанием")
-    void addItemNullDescription() {
-            itemDto.setDescription(null);
-
-        NotNullException notNullException = assertThrows(NotNullException.class,
-                () -> itemService.create(itemDto, 1));
-
-        assertNotNull(notNullException.getMessage());
-
-        itemDto.setDescription(itemDescription);
-    }
-
     @Test
     @DisplayName("Обновление вещи")
     void updateItem() {
